@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.pyo
+.env
+output_nuki/
+.DS_Store
+.omc/
+*.egg-info/
+dist/
+build/
