@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: nuki-tool
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --workers 1 --threads 8 --worker-class gthread --timeout 120 --bind 0.0.0.0:$PORT
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+    healthCheckPath: /
