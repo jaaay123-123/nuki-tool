@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
-import os, io, base64, tempfile, uuid, threading
+import os, io, base64, tempfile, threading
 from pathlib import Path
 from flask import Flask, request, jsonify, send_from_directory
 from openai import OpenAI
 from PIL import Image
 
 app = Flask(__name__)
-OUTPUT_DIR = Path("output_nuki")
-OUTPUT_DIR.mkdir(exist_ok=True)
 
 # CPU 코어 수 기준으로 동시 처리 수 제한 (메모리 스래싱 방지)
 _WORKERS = min(os.cpu_count() or 4, 6)
@@ -222,8 +220,8 @@ def process():
             result_bytes = process_with_gpt(image_bytes, prompt)
             method = "gpt-image-1"
 
-        fname = f"result_{uuid.uuid4().hex[:8]}.png"
-        (OUTPUT_DIR / fname).write_bytes(result_bytes)
+        import uuid
+        fname = f"nuki_{uuid.uuid4().hex[:8]}.png"
         return jsonify({
             "result": "data:image/png;base64," + base64.b64encode(result_bytes).decode(),
             "filename": fname,
@@ -232,9 +230,6 @@ def process():
     except Exception as e:
         import traceback; traceback.print_exc()
         return jsonify({"error": str(e)}), 500
-
-@app.route("/output/<path:p>")
-def output(p): return send_from_directory(OUTPUT_DIR, p)
 
 PAGE = r"""<!doctype html>
 <html lang="ko">
