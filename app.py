@@ -143,7 +143,8 @@ def strip_bg(im: Image.Image, method: str = "rembg") -> tuple[Image.Image, str]:
 # ── gpt-image-1 (프롬프트 모드 전용) ─────────────────────────────────────────
 
 def get_client():
-    return OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+    key = os.environ.get("OPENAI_API_KEY") or os.environ.get("Open_api")
+    return OpenAI(api_key=key)
 
 def preprocess_for_api(im: Image.Image):
     orig_w, orig_h = im.size
